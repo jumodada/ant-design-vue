@@ -12,7 +12,6 @@
   > div {
     display: flex;
     flex-direction: column;
-    // TODO: this is a useless wrapper, and we need to remove it in rc-calendar
     height: 100%;
   }
 }
@@ -44,19 +43,44 @@
   border-collapse: separate;
 }
 
+.@{calendar-prefix-cls}-month-panel-end-selected-cell,
+.@{calendar-prefix-cls}-month-panel-start-selected-cell,
+.@{calendar-prefix-cls}-month-panel-selected-cell {
+  background: @item-hover-bg;
+}
+
+.@{calendar-prefix-cls}-month-panel-end-selected-cell .@{calendar-prefix-cls}-month-panel-month,
+.@{calendar-prefix-cls}-month-panel-start-selected-cell .@{calendar-prefix-cls}-month-panel-month,
 .@{calendar-prefix-cls}-month-panel-selected-cell .@{calendar-prefix-cls}-month-panel-month {
   color: @text-color-inverse;
   background: @primary-color;
-
+  border-radius: 20px;
   &:hover {
     color: @text-color-inverse;
     background: @primary-color;
   }
 }
 
+.@{calendar-prefix-cls}-month-panel-in-range-cell {
+  position: relative;
+  background: @item-active-bg;
+  > a {
+  }
+}
+
+.@{calendar-prefix-cls}-month-panel-start-selected-cell {
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+.@{calendar-prefix-cls}-month-panel-end-selected-cell {
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
 .@{calendar-prefix-cls}-month-panel-cell {
   text-align: center;
-
+  margin: 4px 0;
   &-disabled .@{calendar-prefix-cls}-month-panel-month {
     &,
     &:hover {
@@ -65,15 +89,19 @@
       cursor: not-allowed;
     }
   }
+  .@{calendar-prefix-cls}-month-panel-month {
+    border-radius: 20px;
+  }
 }
 
 .@{calendar-prefix-cls}-month-panel-month {
   display: inline-block;
-  height: 24px;
+  height: 30px;
+  width: 68px;
   margin: 0 auto;
   padding: 0 8px;
   color: @text-color;
-  line-height: 24px;
+  line-height: 30px;
   text-align: center;
   background: transparent;
   border-radius: @border-radius-sm;

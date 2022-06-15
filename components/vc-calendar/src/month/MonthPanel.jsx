@@ -14,6 +14,9 @@ const MonthPanel = {
   mixins: [BaseMixin],
   props: {
     value: PropTypes.any,
+    startValue: PropTypes.any,
+    endValue: PropTypes.any,
+    direction: PropTypes.string,
     defaultValue: PropTypes.any,
     cellRender: PropTypes.any,
     contentRender: PropTypes.any,
@@ -24,6 +27,8 @@ const MonthPanel = {
     // onSelect: PropTypes.func,
     renderFooter: PropTypes.func,
     changeYear: PropTypes.func.def(noop),
+    selectedValue: PropTypes.array,
+    hoverValue: PropTypes.array,
   },
 
   data() {
@@ -40,6 +45,15 @@ const MonthPanel = {
       this.setState({
         sValue: val,
       });
+    },
+  },
+  computed: {
+    isClosedTo() {
+      if (this.startValue && this.endValue) {
+        return this.startValue.year() + 1 === this.endValue.year();
+      } else {
+        return false;
+      }
     },
   },
   methods: {
@@ -66,21 +80,24 @@ const MonthPanel = {
       rootPrefixCls,
       disabledDate,
       renderFooter,
+      selectedValue,
+      hoverValue,
     } = this;
     const year = sValue.year();
     const prefixCls = `${rootPrefixCls}-month-panel`;
-
     const footer = renderFooter && renderFooter('month');
     return (
       <div class={prefixCls}>
         <div>
           <div class={`${prefixCls}-header`}>
-            <a
-              class={`${prefixCls}-prev-year-btn`}
-              role="button"
-              onClick={this.previousYear}
-              title={locale.previousYear}
-            />
+            {this.direction === 'right' && this.isClosedTo ? null : (
+              <a
+                class={`${prefixCls}-prev-year-btn`}
+                role="button"
+                onClick={this.previousYear}
+                title={locale.previousYear}
+              />
+            )}
 
             <a
               class={`${prefixCls}-year-select`}
@@ -92,12 +109,14 @@ const MonthPanel = {
               <span class={`${prefixCls}-year-select-arrow`}>x</span>
             </a>
 
-            <a
-              class={`${prefixCls}-next-year-btn`}
-              role="button"
-              onClick={this.nextYear}
-              title={locale.nextYear}
-            />
+            {this.direction === 'left' && this.isClosedTo ? null : (
+              <a
+                class={`${prefixCls}-next-year-btn`}
+                role="button"
+                onClick={this.nextYear}
+                title={locale.nextYear}
+              />
+            )}
           </div>
           <div class={`${prefixCls}-body`}>
             <MonthTable
@@ -108,6 +127,9 @@ const MonthPanel = {
               cellRender={cellRender}
               contentRender={contentRender}
               prefixCls={prefixCls}
+              selectedValue={selectedValue}
+              hoverValue={hoverValue}
+              onMonthHover={getListeners(this).monthHover}
             />
           </div>
           {footer && <div class={`${prefixCls}-footer`}>{footer}</div>}

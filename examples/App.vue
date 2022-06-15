@@ -8,30 +8,11 @@
         { key: 'tab2', tab: 'tab2' },
       ]"
     />
-    <a-card
-      title="测试"
-      :tab-props="{ size: 'large' }"
-      :tab-list="[
-        { key: 'tab1', tab: 'tab1' },
-        { key: 'tab2', tab: 'tab2' },
-      ]"
-    />
-    <a-card
-      title="测试"
-      :tab-props="{}"
-      :tab-list="[
-        { key: 'tab1', tab: 'tab1' },
-        { key: 'tab2', tab: 'tab2' },
-      ]"
-    />
-    <a-card
-      title="测试"
-      :tab-props="{ size: 'default' }"
-      :tab-list="[
-        { key: 'tab1', tab: 'tab1' },
-        { key: 'tab2', tab: 'tab2' },
-      ]"
-    />
+    <a-range-picker format="YYYY-MM" :mode="['month', 'month']"> </a-range-picker>
+    <a-range-picker> </a-range-picker>
+    <a-month-picker> </a-month-picker>
+    <a-range-picker :mode="['year', 'year']"> </a-range-picker>
+    <a-date-picker mode="year"> </a-date-picker>
   </div>
 </template>
 <script>

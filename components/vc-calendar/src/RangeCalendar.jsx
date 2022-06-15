@@ -160,6 +160,7 @@ const RangeCalendar = {
       newState.prevSelectedValue = val;
       this.setState(newState);
     },
+    sSelectedValue(val) {},
     mode(val) {
       if (!isArraysEqual(this.sMode, val)) {
         this.setState({ sMode: val });
@@ -363,6 +364,23 @@ const RangeCalendar = {
       return hoverValue;
     },
 
+    onMonthHover(value) {
+      let hoverValue = [];
+      const { firstSelectedValue } = this;
+      if (!firstSelectedValue) {
+        if (this.sHoverValue.length) {
+          this.setState({ sHoverValue: [] });
+        }
+        return hoverValue;
+      }
+      hoverValue =
+        this.compare(value, firstSelectedValue) < 0
+          ? [value, firstSelectedValue]
+          : [firstSelectedValue, value];
+      this.fireHoverValueChange(hoverValue);
+      return hoverValue;
+    },
+
     onToday() {
       const startValue = getTodayTime(this.sValue[0]);
       const endValue = startValue.clone().add(1, 'months');
@@ -506,6 +524,16 @@ const RangeCalendar = {
         endValue = endValue.clone().add(1, 'month');
       }
 
+      if (
+        !showTimePicker &&
+        panelTriggerSource !== 'end' &&
+        mode[0] === 'month' &&
+        mode[1] === 'month' &&
+        endValue.isSame(value[0], 'year')
+      ) {
+        endValue = endValue.clone().add(1, 'year');
+      }
+
       return endValue;
     },
     // get disabled hours for second picker
@@ -645,11 +673,6 @@ const RangeCalendar = {
       return this.disabledTime(time, 'end');
     },
 
-    disabledStartMonth(month) {
-      const { sValue } = this;
-      return month.isAfter(sValue[1], 'month');
-    },
-
     disabledEndMonth(month) {
       const { sValue } = this;
       return month.isBefore(sValue[0], 'month');
@@ -671,6 +694,7 @@ const RangeCalendar = {
     } = props;
     const clearIcon = getComponentFromProp(this, 'clearIcon');
     const { sHoverValue, sSelectedValue, sMode: mode, sShowTimePicker, sValue } = this;
+
     const className = {
       [prefixCls]: 1,
       [`${prefixCls}-hidden`]: !props.visible,
@@ -682,6 +706,7 @@ const RangeCalendar = {
       props,
       on: getListeners(this),
     };
+    const [leftMode, rightMode] = mode;
     const newProps = {
       props: {
         selectedValue: sSelectedValue,
@@ -693,6 +718,10 @@ const RangeCalendar = {
           (type === 'end' && sSelectedValue[0]) ||
           !!sHoverValue.length
             ? this.onDayHover
+            : noop,
+        monthHover:
+          type === 'both' && leftMode === 'month' && rightMode === 'month'
+            ? this.onMonthHover
             : noop,
       },
     };
@@ -716,6 +745,7 @@ const RangeCalendar = {
 
     const startValue = this.getStartValue();
     const endValue = this.getEndValue();
+
     const todayTime = getTodayTime(startValue);
     const thisMonth = todayTime.month();
     const thisYear = todayTime.year();
@@ -725,21 +755,25 @@ const RangeCalendar = {
     const nextMonthOfStart = startValue.clone().add(1, 'months');
     const isClosestMonths =
       nextMonthOfStart.year() === endValue.year() && nextMonthOfStart.month() === endValue.month();
+    const isClosesYears = startValue.year() >= endValue.year();
     const leftPartProps = mergeProps(baseProps, newProps, {
       props: {
         hoverValue: sHoverValue,
         direction: 'left',
         disabledTime: this.disabledStartTime,
-        disabledMonth: this.disabledStartMonth,
         format: this.getFormat(),
         value: startValue,
+        startValue,
+        endValue,
         mode: mode[0],
         placeholder: placeholder1,
         showDateInput: this.showDateInput,
         timePicker,
         showTimePicker: sShowTimePicker || mode[0] === 'time',
         enablePrev: true,
+        enablePrevYear: true,
         enableNext: !isClosestMonths || this.isMonthYearPanelShow(mode[1]),
+        enableNextYear: !isClosesYears || this.isMonthYearPanelShow(mode[1]),
         clearIcon,
       },
       on: {
@@ -757,13 +791,16 @@ const RangeCalendar = {
         timePickerDisabledTime: this.getEndDisableTime(),
         placeholder: placeholder2,
         value: endValue,
+        startValue,
+        endValue,
         mode: mode[1],
         showDateInput: this.showDateInput,
         timePicker,
         showTimePicker: sShowTimePicker || mode[1] === 'time',
         disabledTime: this.disabledEndTime,
-        disabledMonth: this.disabledEndMonth,
         enablePrev: !isClosestMonths || this.isMonthYearPanelShow(mode[0]),
+        enablePrevYear: !isClosesYears || this.isMonthYearPanelShow(mode[0]),
+        enableNextYear: true,
         enableNext: true,
         clearIcon,
       },

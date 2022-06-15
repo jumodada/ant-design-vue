@@ -61,6 +61,7 @@ const DateTBody = {
     const dateClass = `${prefixCls}-date`;
     const todayClass = `${prefixCls}-today`;
     const selectedClass = `${prefixCls}-selected-day`;
+    const dateCellWrapperClass = `${prefixCls}-cell-wrapper`;
     const selectedDateClass = `${prefixCls}-selected-date`; // do not move with mouse operation
     const selectedStartDateClass = `${prefixCls}-selected-start-date`;
     const selectedEndDateClass = `${prefixCls}-selected-end-date`;
@@ -213,13 +214,15 @@ const DateTBody = {
         } else {
           const content = contentRender ? contentRender(current, value) : current.date();
           dateHtml = (
-            <div
-              key={getIdFromDate(current)}
-              class={dateClass}
-              aria-selected={selected}
-              aria-disabled={disabled}
-            >
-              {content}
+            <div class={dateCellWrapperClass}>
+              <div
+                key={getIdFromDate(current)}
+                class={dateClass}
+                aria-selected={selected}
+                aria-disabled={disabled}
+              >
+                {content}
+              </div>
             </div>
           );
         }

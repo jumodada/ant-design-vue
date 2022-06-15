@@ -12,6 +12,8 @@ const CalendarPart = {
   props: {
     prefixCls: PropTypes.string,
     value: PropTypes.any,
+    startValue: PropTypes.any,
+    endValue: PropTypes.any,
     hoverValue: PropTypes.any,
     selectedValue: PropTypes.any,
     direction: PropTypes.any,
@@ -29,7 +31,9 @@ const CalendarPart = {
     // onInputSelect: PropTypes.func,
     timePickerDisabledTime: PropTypes.object,
     enableNext: PropTypes.any,
+    enableNextYear: PropTypes.any,
     enablePrev: PropTypes.any,
+    enablePrevYear: PropTypes.any,
     clearIcon: PropTypes.any,
     dateRender: PropTypes.func,
     inputMode: PropTypes.string,
@@ -53,7 +57,9 @@ const CalendarPart = {
       timePickerDisabledTime,
       showTimePicker,
       enablePrev,
+      enablePrevYear,
       enableNext,
+      enableNextYear,
       disabledMonth,
       showDateInput,
       dateRender,
@@ -61,6 +67,8 @@ const CalendarPart = {
       showClear,
       inputMode,
       inputReadOnly,
+      startValue,
+      endValue,
     } = props;
     const clearIcon = getComponentFromProp(this, 'clearIcon');
     const {
@@ -70,7 +78,9 @@ const CalendarPart = {
       panelChange = noop,
       select = noop,
       dayHover = noop,
+      monthHover = noop,
     } = getListeners(this);
+
     const shouldShowTimePicker = showTimePicker && timePicker;
     const disabledTimeConfig =
       shouldShowTimePicker && disabledTime ? getTimeConfig(selectedValue, disabledTime) : null;
@@ -126,8 +136,13 @@ const CalendarPart = {
         ...newProps,
         mode,
         enableNext,
+        enableNextYear,
         enablePrev,
+        enablePrevYear,
         disabledMonth,
+        startValue,
+        direction,
+        endValue,
       },
       on: {
         valueChange,
@@ -146,13 +161,14 @@ const CalendarPart = {
       on: {
         select,
         dayHover,
+        monthHover,
       },
     };
     return (
       <div class={`${rangeClassName}-part ${rangeClassName}-${direction}`}>
         {dateInputElement}
         <div style={{ outline: 'none' }}>
-          <CalendarHeader {...headerProps} />
+          <CalendarHeader {...tableProps} {...headerProps} />
           {showTimePicker ? (
             <div class={`${prefixCls}-time-picker`}>
               <div class={`${prefixCls}-time-picker-panel`}>{timePickerEle}</div>

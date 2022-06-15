@@ -17,6 +17,8 @@ const MonthTable = {
     locale: PropTypes.any,
     contentRender: PropTypes.any,
     disabledDate: PropTypes.func,
+    selectedValue: PropTypes.array,
+    hoverValue: PropTypes.array,
   },
   data() {
     return {
@@ -69,22 +71,38 @@ const MonthTable = {
     const value = this.sValue;
     const today = getTodayTime(value);
     const months = this.months();
-    const currentMonth = value.month();
     const { prefixCls, locale, contentRender, cellRender, disabledDate } = props;
+
     const monthsEls = months.map((month, index) => {
       const tds = month.map(monthData => {
         let disabled = false;
+        const currentCellDateValue = value.clone();
+        currentCellDateValue.month(monthData.value);
         if (disabledDate) {
-          const testValue = value.clone();
-          testValue.month(monthData.value);
-          disabled = disabledDate(testValue);
+          disabled = disabledDate(currentCellDateValue);
         }
+
+        const [startHoverValue, endHoverValue] = this.hoverValue || [];
+        const [startSelectedValue, endSelectedValue] = this.selectedValue || [];
+        const xValue = !this.hoverValue && !this.selectedValue ? value : startSelectedValue;
+        let isHovering = !!(startHoverValue && endHoverValue);
         const classNameMap = {
           [`${prefixCls}-cell`]: 1,
           [`${prefixCls}-cell-disabled`]: disabled,
-          [`${prefixCls}-selected-cell`]: monthData.value === currentMonth,
+          [`${prefixCls}-selected-cell`]: isHovering ? false : currentCellDateValue.isSame(xValue),
+          [`${prefixCls}-start-selected-cell`]: isHovering
+            ? currentCellDateValue.isSame(startHoverValue)
+            : currentCellDateValue.isSame(xValue),
+          [`${prefixCls}-end-selected-cell`]: isHovering
+            ? currentCellDateValue.isSame(endHoverValue)
+            : currentCellDateValue.isSame(endSelectedValue),
           [`${prefixCls}-current-cell`]:
             today.year() === value.year() && monthData.value === today.month(),
+          [`${prefixCls}-in-range-cell`]: isHovering
+            ? currentCellDateValue.isAfter(startHoverValue) &&
+              currentCellDateValue.isBefore(endHoverValue)
+            : currentCellDateValue.isAfter(startSelectedValue) &&
+              currentCellDateValue.isBefore(endSelectedValue),
         };
         let cellEl;
         if (cellRender) {
@@ -104,13 +122,16 @@ const MonthTable = {
         }
         return (
           <td
+            style={{ padding: 0 }}
             role="gridcell"
             key={monthData.value}
             onClick={disabled ? noop : () => this.chooseMonth(monthData.value)}
             title={monthData.title}
-            class={classNameMap}
+            onMouseenter={() => {
+              this.$listeners.monthHover && this.$listeners.monthHover(currentCellDateValue);
+            }}
           >
-            {cellEl}
+            <div class={classNameMap}>{cellEl}</div>
           </td>
         );
       });

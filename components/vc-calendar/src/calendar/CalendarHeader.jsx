@@ -27,17 +27,27 @@ const CalendarHeader = {
   props: {
     prefixCls: PropTypes.string,
     value: PropTypes.object,
+    startValue: PropTypes.object,
+    endValue: PropTypes.object,
+    direction: {
+      type: String,
+      default: 'left',
+    },
     // onValueChange: PropTypes.func,
     showTimePicker: PropTypes.bool,
     // onPanelChange: PropTypes.func,
     locale: PropTypes.object,
     enablePrev: PropTypes.any.def(1),
+    enablePrevYear: PropTypes.any.def(1),
     enableNext: PropTypes.any.def(1),
+    enableNextYear: PropTypes.any.def(1),
     disabledMonth: PropTypes.func,
     mode: PropTypes.any,
     monthCellRender: PropTypes.func,
     monthCellContentRender: PropTypes.func,
     renderFooter: PropTypes.func,
+    selectedValue: PropTypes.array,
+    hoverValue: PropTypes.array,
   },
   data() {
     this.nextMonth = goMonth.bind(this, 1);
@@ -148,7 +158,9 @@ const CalendarHeader = {
       value,
       showTimePicker,
       enableNext,
+      enableNextYear,
       enablePrev,
+      enablePrevYear,
       disabledMonth,
       renderFooter,
     } = props;
@@ -160,13 +172,19 @@ const CalendarHeader = {
           locale={locale}
           value={value}
           rootPrefixCls={prefixCls}
-          onSelect={this.onMonthSelect}
+          onSelect={getListeners(this).select || this.onMonthSelect}
+          onMonthHover={getListeners(this).monthHover || noop}
           onYearPanelShow={() => this.showYearPanel('month')}
           disabledDate={disabledMonth}
           cellRender={props.monthCellRender}
           contentRender={props.monthCellContentRender}
           renderFooter={renderFooter}
           changeYear={this.changeYear}
+          direction={this.direction}
+          selectedValue={props.selectedValue}
+          hoverValue={props.hoverValue}
+          startValue={props.startValue}
+          endValue={props.endValue}
         />
       );
     }
@@ -199,7 +217,7 @@ const CalendarHeader = {
       <div class={`${prefixCls}-header`}>
         <div style={{ position: 'relative' }}>
           {showIf(
-            enablePrev && !showTimePicker,
+            enablePrevYear && !showTimePicker,
             <a
               class={`${prefixCls}-prev-year-btn`}
               role="button"
@@ -226,7 +244,7 @@ const CalendarHeader = {
             />,
           )}
           {showIf(
-            enableNext && !showTimePicker,
+            enableNextYear && !showTimePicker,
             <a
               class={`${prefixCls}-next-year-btn`}
               onClick={this.nextYear}
