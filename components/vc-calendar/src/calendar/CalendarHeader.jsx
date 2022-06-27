@@ -194,10 +194,16 @@ const CalendarHeader = {
           locale={locale}
           value={value}
           rootPrefixCls={prefixCls}
-          onSelect={this.onYearSelect}
+          onSelect={getListeners(this).select || this.onYearSelect}
           onDecadePanelShow={this.showDecadePanel}
           renderFooter={renderFooter}
           disabledDate={disabledMonth}
+          direction={this.direction}
+          selectedValue={props.selectedValue}
+          hoverValue={props.hoverValue}
+          startValue={props.startValue}
+          endValue={props.endValue}
+          onYearHover={getListeners(this).yearHover || noop}
         />
       );
     }

@@ -14,9 +14,6 @@ const MonthPanel = {
   mixins: [BaseMixin],
   props: {
     value: PropTypes.any,
-    startValue: PropTypes.any,
-    endValue: PropTypes.any,
-    direction: PropTypes.string,
     defaultValue: PropTypes.any,
     cellRender: PropTypes.any,
     contentRender: PropTypes.any,
@@ -29,6 +26,9 @@ const MonthPanel = {
     changeYear: PropTypes.func.def(noop),
     selectedValue: PropTypes.array,
     hoverValue: PropTypes.array,
+    startValue: PropTypes.any,
+    endValue: PropTypes.any,
+    direction: PropTypes.string,
   },
 
   data() {

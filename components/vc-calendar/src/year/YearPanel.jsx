@@ -13,11 +13,15 @@ function goYear(direction) {
 }
 
 function chooseYear(year) {
-  const value = this.sValue.clone();
-  value.year(year);
-  value.month(this.sValue.month());
-  this.sValue = value;
-  this.__emit('select', value);
+  // const value = this.sValue.clone();
+  // value.year(year);
+  // value.month(this.sValue.month());
+  // this.sValue = value;
+  // this.__emit('select', value);
+  const next = this.sValue.clone();
+  next.year(year);
+  next.month(this.sValue.month());
+  this.setAndSelectValue(next);
 }
 
 export default {
@@ -29,6 +33,11 @@ export default {
     locale: PropTypes.object,
     renderFooter: PropTypes.func,
     disabledDate: PropTypes.func,
+    selectedValue: PropTypes.array,
+    hoverValue: PropTypes.array,
+    startValue: PropTypes.any,
+    endValue: PropTypes.any,
+    direction: PropTypes.string,
   },
   data() {
     this.nextDecade = goYear.bind(this, 10);
@@ -43,6 +52,12 @@ export default {
     },
   },
   methods: {
+    setAndSelectValue(value) {
+      this.setState({
+        sValue: value,
+      });
+      this.__emit('select', value);
+    },
     years() {
       const value = this.sValue;
       const currentYear = value.year();
@@ -76,10 +91,16 @@ export default {
     const endYear = startYear + 9;
     const prefixCls = `${this.rootPrefixCls}-year-panel`;
     const { disabledDate } = $props;
-
     const yeasEls = years.map((row, index) => {
       const tds = row.map(yearData => {
         let disabled = false;
+        const currentCellDateValue = value.clone();
+        currentCellDateValue.year(yearData.year);
+        const [startHoverValue, endHoverValue] = this.hoverValue || [];
+        const [startSelectedValue, endSelectedValue] = this.selectedValue || [];
+        const xValue = !this.hoverValue && !this.selectedValue ? value : startSelectedValue;
+        let isHovering = !!(startHoverValue && endHoverValue);
+        console.log(currentCellDateValue);
         if (disabledDate) {
           const testValue = value.clone();
           testValue.year(yearData.year);
@@ -88,27 +109,42 @@ export default {
         const classNameMap = {
           [`${prefixCls}-cell`]: 1,
           [`${prefixCls}-cell-disabled`]: disabled,
-          [`${prefixCls}-selected-cell`]: yearData.year === currentYear,
+          [`${prefixCls}-selected-cell`]: isHovering ? false : currentCellDateValue.isSame(xValue),
           [`${prefixCls}-last-decade-cell`]: yearData.year < startYear,
           [`${prefixCls}-next-decade-cell`]: yearData.year > endYear,
+          [`${prefixCls}-in-range-cell`]: isHovering
+            ? currentCellDateValue.isAfter(startHoverValue) &&
+              currentCellDateValue.isBefore(endHoverValue)
+            : currentCellDateValue.isAfter(startSelectedValue) &&
+              currentCellDateValue.isBefore(endSelectedValue),
+          [`${prefixCls}-start-selected-cell`]: isHovering
+            ? currentCellDateValue.isSame(startHoverValue)
+            : currentCellDateValue.isSame(xValue),
+          [`${prefixCls}-end-selected-cell`]: isHovering
+            ? currentCellDateValue.isSame(endHoverValue)
+            : currentCellDateValue.isSame(endSelectedValue),
         };
-        let clickHandler = noop;
-        if (yearData.year < startYear) {
-          clickHandler = this.previousDecade;
-        } else if (yearData.year > endYear) {
-          clickHandler = this.nextDecade;
-        } else {
-          clickHandler = chooseYear.bind(this, yearData.year);
-        }
+        // let clickHandler = noop;
+        // if (yearData.year < startYear) {
+        //   clickHandler = this.previousDecade;
+        // } else if (yearData.year > endYear) {
+        //   clickHandler = this.nextDecade;
+        // } else {
+        //   clickHandler = chooseYear.bind(this, yearData.year);
+        // }
         return (
           <td
             role="gridcell"
             title={yearData.title}
             key={yearData.content}
-            onClick={disabled ? noop : clickHandler}
-            class={classNameMap}
+            onClick={disabled ? noop : chooseYear.bind(this, yearData.year)}
+            onMouseenter={() => {
+              this.$listeners.yearHover && this.$listeners.yearHover(currentCellDateValue);
+            }}
           >
-            <a class={`${prefixCls}-year`}>{yearData.content}</a>
+            <div class={classNameMap}>
+              <a class={`${prefixCls}-year`}>{yearData.content}</a>
+            </div>
           </td>
         );
       });

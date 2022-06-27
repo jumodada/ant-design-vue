@@ -79,6 +79,7 @@ const CalendarPart = {
       select = noop,
       dayHover = noop,
       monthHover = noop,
+      yearHover = noop,
     } = getListeners(this);
 
     const shouldShowTimePicker = showTimePicker && timePicker;
@@ -162,6 +163,7 @@ const CalendarPart = {
         select,
         dayHover,
         monthHover,
+        yearHover,
       },
     };
     return (
