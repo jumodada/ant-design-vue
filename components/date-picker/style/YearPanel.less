@@ -28,6 +28,9 @@
 
 .@{calendar-prefix-cls}-year-panel-body {
   flex: 1;
+  td {
+    padding: 0;
+  }
 }
 
 .@{calendar-prefix-cls}-year-panel-footer {
@@ -58,11 +61,12 @@
 
 .@{calendar-prefix-cls}-year-panel-year {
   display: inline-block;
-  height: 24px;
+  height: 30px;
+  width: 68px;
   margin: 0 auto;
   padding: 0 8px;
   color: @text-color;
-  line-height: 24px;
+  line-height: 30px;
   text-align: center;
   background: transparent;
   border-radius: @border-radius-sm;
@@ -82,6 +86,41 @@
     color: @text-color-inverse;
     background: @primary-color;
   }
+}
+
+.@{calendar-prefix-cls}-year-panel-in-range-cell {
+  position: relative;
+  background: @item-active-bg;
+  > a {
+  }
+}
+
+.@{calendar-prefix-cls}-year-panel-end-selected-cell .@{calendar-prefix-cls}-year-panel-year,
+.@{calendar-prefix-cls}-year-panel-start-selected-cell .@{calendar-prefix-cls}-year-panel-year,
+.@{calendar-prefix-cls}-year-panel-selected-cell .@{calendar-prefix-cls}-year-panel-year {
+  color: @text-color-inverse;
+  background: @primary-color;
+  border-radius: 20px;
+  &:hover {
+    color: @text-color-inverse;
+    background: @primary-color;
+  }
+}
+
+.@{calendar-prefix-cls}-year-panel-end-selected-cell,
+.@{calendar-prefix-cls}-year-panel-start-selected-cell,
+.@{calendar-prefix-cls}-year-panel-selected-cell {
+  background: @item-hover-bg;
+}
+
+.@{calendar-prefix-cls}-year-panel-start-selected-cell {
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+.@{calendar-prefix-cls}-year-panel-end-selected-cell {
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
 .@{calendar-prefix-cls}-year-panel-last-decade-cell,

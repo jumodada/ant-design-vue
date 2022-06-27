@@ -138,12 +138,13 @@ export default {
             title={yearData.title}
             key={yearData.content}
             onClick={disabled ? noop : chooseYear.bind(this, yearData.year)}
-            class={classNameMap}
             onMouseenter={() => {
               this.$listeners.yearHover && this.$listeners.yearHover(currentCellDateValue);
             }}
           >
-            <a class={`${prefixCls}-year`}>{yearData.content}</a>
+            <div class={classNameMap}>
+              <a class={`${prefixCls}-year`}>{yearData.content}</a>
+            </div>
           </td>
         );
       });
