@@ -551,6 +551,16 @@ const RangeCalendar = {
         endValue = endValue.clone().add(1, 'year');
       }
 
+      if (
+        !showTimePicker &&
+        panelTriggerSource !== 'end' &&
+        mode[0] === 'year' &&
+        mode[1] === 'year' &&
+        endValue.isSame(value[0], 'year')
+      ) {
+        endValue = endValue.clone().add(10, 'year');
+      }
+
       return endValue;
     },
     // get disabled hours for second picker

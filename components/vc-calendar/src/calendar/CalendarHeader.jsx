@@ -52,8 +52,8 @@ const CalendarHeader = {
   data() {
     this.nextMonth = goMonth.bind(this, 1);
     this.previousMonth = goMonth.bind(this, -1);
-    this.nextYear = goYear.bind(this, 1);
-    this.previousYear = goYear.bind(this, -1);
+    this.nextYear = val => goYear.call(this, val || 1);
+    this.previousYear = val => goYear.call(this, val || -1);
     return {
       yearPanelReferer: null,
     };
@@ -80,11 +80,13 @@ const CalendarHeader = {
       this.__emit('valueChange', value);
     },
 
-    changeYear(direction) {
+    changeYear(direction, isYearMode) {
       if (direction > 0) {
-        this.nextYear();
+        const value = isYearMode ? 10 : 1;
+        this.nextYear(value);
       } else {
-        this.previousYear();
+        const value = isYearMode ? -10 : 1;
+        this.previousYear(value);
       }
     },
 
@@ -197,6 +199,7 @@ const CalendarHeader = {
           onSelect={getListeners(this).select || this.onYearSelect}
           onDecadePanelShow={this.showDecadePanel}
           renderFooter={renderFooter}
+          changeYear={this.changeYear}
           disabledDate={disabledMonth}
           direction={this.direction}
           selectedValue={props.selectedValue}

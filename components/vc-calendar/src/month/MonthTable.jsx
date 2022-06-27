@@ -84,7 +84,7 @@ const MonthTable = {
 
         const [startHoverValue, endHoverValue] = this.hoverValue || [];
         const [startSelectedValue, endSelectedValue] = this.selectedValue || [];
-        const xValue = !this.hoverValue && !this.selectedValue ? value : startSelectedValue;
+        const xValue = !this.hoverValue && !this.selectedValue ? value : null;
         let isHovering = !!(startHoverValue && endHoverValue);
         const classNameMap = {
           [`${prefixCls}-cell`]: 1,
@@ -92,7 +92,7 @@ const MonthTable = {
           [`${prefixCls}-selected-cell`]: isHovering ? false : currentCellDateValue.isSame(xValue),
           [`${prefixCls}-start-selected-cell`]: isHovering
             ? currentCellDateValue.isSame(startHoverValue)
-            : currentCellDateValue.isSame(xValue),
+            : currentCellDateValue.isSame(startSelectedValue),
           [`${prefixCls}-end-selected-cell`]: isHovering
             ? currentCellDateValue.isSame(endHoverValue)
             : currentCellDateValue.isSame(endSelectedValue),

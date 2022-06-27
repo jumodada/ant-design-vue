@@ -5,11 +5,7 @@ const ROW = 4;
 const COL = 3;
 function noop() {}
 function goYear(direction) {
-  const value = this.sValue.clone();
-  value.add(direction, 'year');
-  this.setState({
-    sValue: value,
-  });
+  this.changeYear(direction, 'year');
 }
 
 function chooseYear(year) {
@@ -21,6 +17,7 @@ function chooseYear(year) {
   const next = this.sValue.clone();
   next.year(year);
   next.month(this.sValue.month());
+  this.sValue = next;
   this.setAndSelectValue(next);
 }
 
@@ -32,6 +29,7 @@ export default {
     defaultValue: PropTypes.object,
     locale: PropTypes.object,
     renderFooter: PropTypes.func,
+    changeYear: PropTypes.func.def(noop),
     disabledDate: PropTypes.func,
     selectedValue: PropTypes.array,
     hoverValue: PropTypes.array,
@@ -98,9 +96,9 @@ export default {
         currentCellDateValue.year(yearData.year);
         const [startHoverValue, endHoverValue] = this.hoverValue || [];
         const [startSelectedValue, endSelectedValue] = this.selectedValue || [];
-        const xValue = !this.hoverValue && !this.selectedValue ? value : startSelectedValue;
+        const xValue = !this.hoverValue && !this.selectedValue ? value : null;
         let isHovering = !!(startHoverValue && endHoverValue);
-        console.log(currentCellDateValue);
+
         if (disabledDate) {
           const testValue = value.clone();
           testValue.year(yearData.year);
@@ -119,7 +117,7 @@ export default {
               currentCellDateValue.isBefore(endSelectedValue),
           [`${prefixCls}-start-selected-cell`]: isHovering
             ? currentCellDateValue.isSame(startHoverValue)
-            : currentCellDateValue.isSame(xValue),
+            : currentCellDateValue.isSame(startSelectedValue),
           [`${prefixCls}-end-selected-cell`]: isHovering
             ? currentCellDateValue.isSame(endHoverValue)
             : currentCellDateValue.isSame(endSelectedValue),
