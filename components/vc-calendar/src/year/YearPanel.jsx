@@ -9,15 +9,9 @@ function goYear(direction) {
 }
 
 function chooseYear(year) {
-  // const value = this.sValue.clone();
-  // value.year(year);
-  // value.month(this.sValue.month());
-  // this.sValue = value;
-  // this.__emit('select', value);
   const next = this.sValue.clone();
   next.year(year);
   next.month(this.sValue.month());
-  this.sValue = next;
   this.setAndSelectValue(next);
 }
 

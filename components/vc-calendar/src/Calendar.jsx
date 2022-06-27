@@ -328,6 +328,7 @@ const Calendar = {
             disabledMonth={disabledDate}
             onValueChange={this.setValue}
             onPanelChange={this.onPanelChange}
+            onYearSelect={this.onSelect}
             renderFooter={renderFooter}
             showTimePicker={showTimePicker}
             prefixCls={prefixCls}
