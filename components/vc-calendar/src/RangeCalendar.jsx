@@ -381,6 +381,23 @@ const RangeCalendar = {
       return hoverValue;
     },
 
+    onYearHover(value) {
+      let hoverValue = [];
+      const { firstSelectedValue } = this;
+      if (!firstSelectedValue) {
+        if (this.sHoverValue.length) {
+          this.setState({ sHoverValue: [] });
+        }
+        return hoverValue;
+      }
+      hoverValue =
+        this.compare(value, firstSelectedValue) < 0
+          ? [value, firstSelectedValue]
+          : [firstSelectedValue, value];
+      this.fireHoverValueChange(hoverValue);
+      return hoverValue;
+    },
+
     onToday() {
       const startValue = getTodayTime(this.sValue[0]);
       const endValue = startValue.clone().add(1, 'months');
@@ -723,6 +740,8 @@ const RangeCalendar = {
           type === 'both' && leftMode === 'month' && rightMode === 'month'
             ? this.onMonthHover
             : noop,
+        yearHover:
+          type === 'both' && leftMode === 'year' && rightMode === 'year' ? this.onYearHover : noop,
       },
     };
 
