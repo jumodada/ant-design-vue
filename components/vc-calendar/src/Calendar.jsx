@@ -317,6 +317,7 @@ const Calendar = {
     if (props.renderSidebar) {
       children.push(props.renderSidebar());
     }
+    console.log(this);
     children.push(
       <div class={`${prefixCls}-panel`} key="panel">
         {dateInputElement}
@@ -325,6 +326,7 @@ const Calendar = {
             locale={locale}
             mode={sMode}
             value={sValue}
+            realValue={this.selectedValue}
             disabledMonth={disabledDate}
             onValueChange={this.setValue}
             onPanelChange={this.onPanelChange}

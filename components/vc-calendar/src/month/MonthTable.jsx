@@ -14,6 +14,7 @@ const MonthTable = {
     cellRender: PropTypes.func,
     prefixCls: PropTypes.string,
     value: PropTypes.object,
+    realValue: PropTypes.object,
     locale: PropTypes.any,
     contentRender: PropTypes.any,
     disabledDate: PropTypes.func,
@@ -84,7 +85,7 @@ const MonthTable = {
 
         const [startHoverValue, endHoverValue] = this.hoverValue || [];
         const [startSelectedValue, endSelectedValue] = this.selectedValue || [];
-        const xValue = !this.hoverValue && !this.selectedValue ? value : null;
+        const xValue = !this.hoverValue && !this.selectedValue ? this.realValue : null;
         let isHovering = !!(startHoverValue && endHoverValue);
         const classNameMap = {
           [`${prefixCls}-cell`]: 1,

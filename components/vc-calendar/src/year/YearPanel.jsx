@@ -20,6 +20,7 @@ export default {
   props: {
     rootPrefixCls: PropTypes.string,
     value: PropTypes.object,
+    realValue: PropTypes.object,
     defaultValue: PropTypes.object,
     locale: PropTypes.object,
     renderFooter: PropTypes.func,
@@ -41,6 +42,17 @@ export default {
   watch: {
     value(val) {
       this.sValue = val;
+    },
+  },
+  computed: {
+    isClosedTo() {
+      if (this.startValue && this.endValue) {
+        const startYear = parseInt(this.startValue.year() / 10, 10) * 10;
+        const endYear = parseInt(this.endValue.year() / 10, 10) * 10;
+        return startYear + 10 === endYear;
+      } else {
+        return false;
+      }
     },
   },
   methods: {
@@ -90,9 +102,8 @@ export default {
         currentCellDateValue.year(yearData.year);
         const [startHoverValue, endHoverValue] = this.hoverValue || [];
         const [startSelectedValue, endSelectedValue] = this.selectedValue || [];
-        const xValue = !this.hoverValue && !this.selectedValue ? value : null;
+        const xValue = !this.hoverValue && !this.selectedValue ? this.realValue : null;
         let isHovering = !!(startHoverValue && endHoverValue);
-
         if (disabledDate) {
           const testValue = value.clone();
           testValue.year(yearData.year);
@@ -151,12 +162,14 @@ export default {
       <div class={prefixCls}>
         <div>
           <div class={`${prefixCls}-header`}>
-            <a
-              class={`${prefixCls}-prev-decade-btn`}
-              role="button"
-              onClick={this.previousDecade}
-              title={locale.previousDecade}
-            />
+            {this.direction === 'right' && this.isClosedTo ? null : (
+              <a
+                class={`${prefixCls}-prev-decade-btn`}
+                role="button"
+                onClick={this.previousDecade}
+                title={locale.previousDecade}
+              />
+            )}
             <a
               class={`${prefixCls}-decade-select`}
               role="button"
@@ -168,13 +181,14 @@ export default {
               </span>
               <span class={`${prefixCls}-decade-select-arrow`}>x</span>
             </a>
-
-            <a
-              class={`${prefixCls}-next-decade-btn`}
-              role="button"
-              onClick={this.nextDecade}
-              title={locale.nextDecade}
-            />
+            {this.direction === 'left' && this.isClosedTo ? null : (
+              <a
+                class={`${prefixCls}-next-decade-btn`}
+                role="button"
+                onClick={this.nextDecade}
+                title={locale.nextDecade}
+              />
+            )}
           </div>
           <div class={`${prefixCls}-body`}>
             <table class={`${prefixCls}-table`} cellSpacing="0" role="grid">

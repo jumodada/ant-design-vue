@@ -14,6 +14,7 @@ const MonthPanel = {
   mixins: [BaseMixin],
   props: {
     value: PropTypes.any,
+    realValue: PropTypes.any,
     defaultValue: PropTypes.any,
     cellRender: PropTypes.any,
     contentRender: PropTypes.any,
@@ -124,6 +125,7 @@ const MonthPanel = {
               onSelect={this.setAndSelectValue}
               locale={locale}
               value={sValue}
+              realValue={this.realValue}
               cellRender={cellRender}
               contentRender={contentRender}
               prefixCls={prefixCls}

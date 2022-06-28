@@ -103,6 +103,7 @@ const MonthCalendar = {
             prefixCls={prefixCls}
             mode={mode}
             value={value}
+            realValue={this.selectedValue}
             locale={locale}
             disabledMonth={disabledDate}
             monthCellRender={monthCellRender}

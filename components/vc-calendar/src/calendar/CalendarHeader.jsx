@@ -27,6 +27,7 @@ const CalendarHeader = {
   props: {
     prefixCls: PropTypes.string,
     value: PropTypes.object,
+    realValue: PropTypes.object,
     startValue: PropTypes.object,
     endValue: PropTypes.object,
     direction: {
@@ -177,6 +178,7 @@ const CalendarHeader = {
         <MonthPanel
           locale={locale}
           value={value}
+          realValue={props.realValue}
           rootPrefixCls={prefixCls}
           onSelect={getListeners(this).select || this.onMonthSelect}
           onMonthHover={getListeners(this).monthHover || noop}
@@ -199,6 +201,7 @@ const CalendarHeader = {
         <YearPanel
           locale={locale}
           value={value}
+          realValue={props.realValue}
           rootPrefixCls={prefixCls}
           onSelect={getListeners(this).select || this.onYearSelect}
           onDecadePanelShow={this.showDecadePanel}
